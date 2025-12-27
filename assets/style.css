@@ -1,0 +1,282 @@
+/* =========================================
+   1. GLOBAL STYLES & FONTS
+   ========================================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f6f9; /* Warna background dashboard default */
+    overflow-x: hidden;
+}
+
+        body {
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .scan-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px;
+        }
+        .camera-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .camera-header {
+            background: linear-gradient(135deg, #0d6efd, #0043a8);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        #reader {
+            width: 100%;
+            border-radius: 0 0 20px 20px;
+        }
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(255,255,255,0.8);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-back:hover {
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+/* =========================================
+   2. LOGIN PAGE STYLES (index.php)
+   ========================================= */
+.login-body {
+    background-color: #f0f2f5;
+}
+
+.login-container {
+    min-height: 100vh;
+}
+
+/* Sisi Kiri: Gambar */
+.login-sidebar {
+    background-image: url('https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyrzZXwwjil1xIQxX9d61-3qpDT7IWYTQq10PI2TUNr9ZE3OCoPZjLO-HToFWBbYuR5sQf0KK99zOxul-dx8-lYzkXvyZaw-V9SlJWv_pKKkgdrs1GA5TuAjvQ-gjmNKr3pWEN8GQ=s1360-w1360-h1020-rw');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 3rem;
+}
+
+.login-sidebar::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to top, rgba(13, 110, 253, 0.9), rgba(13, 110, 253, 0.4));
+}
+
+.sidebar-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+}
+
+/* Sisi Kanan: Form */
+.login-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    padding: 2rem;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 2rem;
+}
+
+.login-header h3 {
+    font-weight: 700;
+    color: #333;
+    letter-spacing: -0.5px;
+}
+
+.login-header p {
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+/* Custom Input Group */
+.input-group-custom {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 5px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.input-group-custom:focus-within {
+    border-color: #0d6efd;
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+}
+
+.input-icon {
+    padding: 0 15px;
+    color: #adb5bd;
+    font-size: 1.1rem;
+}
+
+.input-group-custom:focus-within .input-icon {
+    color: #0d6efd;
+}
+
+.form-control-custom {
+    border: none;
+    background: transparent;
+    height: 45px;
+    width: 100%;
+    outline: none;
+    font-size: 1rem;
+    color: #495057;
+}
+
+.form-control-custom::placeholder {
+    color: #adb5bd;
+}
+
+.btn-primary-custom {
+    background: linear-gradient(45deg, #0d6efd, #0056b3);
+    border: none;
+    height: 50px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3);
+    background: linear-gradient(45deg, #0b5ed7, #004494);
+}
+
+.alert-custom {
+    border-radius: 12px;
+    border: none;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 991.98px) {
+    .login-sidebar { display: none; }
+    .login-section { width: 100%; height: 100vh; }
+}
+
+/* =========================================
+   3. DASHBOARD & SIDEBAR STYLES
+   ========================================= */
+#wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    width: 250px;
+    flex-shrink: 0;
+    background-color: #343a40;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+.sidebar-heading {
+    padding: 1.5rem 1.25rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: #212529;
+    text-align: center;
+}
+
+.list-group-item {
+    border: none;
+    padding: 15px 20px;
+    font-size: 16px;
+    background-color: #343a40;
+    color: #adb5bd;
+}
+
+.list-group-item:hover {
+    background-color: #495057;
+    color: #fff;
+    text-decoration: none;
+}
+
+.list-group-item.active {
+    background-color: #0d6efd;
+    color: #fff;
+    font-weight: bold;
+}
+
+.list-group-item i {
+    width: 25px;
+    text-align: center;
+    margin-right: 10px;
+}
+
+#page-content-wrapper {
+    width: 100%;
+}
+
+/* Card Statistik Dashboard */
+.card-stat {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.card-stat:hover {
+    transform: translateY(-5px);
+}
+
+.icon-box {
+    font-size: 40px;
+    opacity: 0.3;
+}
+
+/* Scanner Box */
+#reader {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Toggled State (Saat Sidebar disembunyikan) */
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px;
+}
+
+@media (max-width: 768px) {
+    #sidebar-wrapper { margin-left: -250px; }
+    #wrapper.toggled #sidebar-wrapper { margin-left: 0; }
+}
+
