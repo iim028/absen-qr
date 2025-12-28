@@ -86,7 +86,7 @@ if (!$d) { echo "Data siswa tidak ditemukan."; exit; }
         .school-name {
             font-size: 10px;
             font-weight: 700;
-            color: white;
+            color: black;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 25px; /* Jarak agar turun dari area biru */
@@ -162,7 +162,7 @@ if (!$d) { echo "Data siswa tidak ditemukan."; exit; }
             </div>
 
             <div class="info-area">
-                <div class="school-name">SMK DIGITAL ABSENSI</div>
+                <div class="school-name">KARTU PELAJAR</div>
                 <table>
                     <tr>
                         <td width="50"><strong>NISN</strong></td>
