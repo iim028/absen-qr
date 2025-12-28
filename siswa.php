@@ -140,16 +140,36 @@ if (isset($_GET['edit'])) {
         <div class="sidebar-heading"><i class="fa-solid fa-qrcode me-2"></i>ABSENSI</div>
         <div class="list-group list-group-flush mt-3">
             <a href="dashboard.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-gauge"></i> Dashboard</a>
-            <?php if ($role == 'admin'): ?><a href="manajemen_user.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-users-gear"></i> Manajemen User</a><?php endif; ?>
-            <a href="siswa.php" class="list-group-item list-group-item-action active"><i class="fa-solid fa-user-graduate"></i> Data Siswa</a>
-            <a href="scan.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-camera"></i> Scan QR</a>
-            <a href="rekap.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-file-excel"></i> Rekap Absensi</a>
-            <a href="data_absensi.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-pen-to-square"></i> Edit Absensi</a>
-            <a href="libur.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-calendar-xmark"></i> Atur Libur</a>
-            <a href="izin.php" class="list-group-item list-group-item-action">
-                <i class="fa-solid fa-envelope-open-text"></i> Approval Izin <?php if($izin_pending > 0): ?><span class="badge bg-danger rounded-pill ms-2"><?= $izin_pending ?></span><?php endif; ?>
-            </a>
-            <?php if ($role == 'admin'): ?><a href="pengaturan.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-clock"></i> Atur Jam</a><?php endif; ?>
+            
+            <!-- ADMIN & PETUGAS -->
+            <?php if ($role == 'admin' || $role == 'petugas'): ?>
+                <?php if ($role == 'admin'): ?><a href="manajemen_user.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-users-gear"></i> Manajemen User</a><?php endif; ?>
+                
+                <!-- Menu Aktif -->
+                <a href="siswa.php" class="list-group-item list-group-item-action active"><i class="fa-solid fa-user-graduate"></i> Data Siswa</a>
+                
+                <a href="scan.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-camera"></i> Scan QR</a>
+                <a href="rekap.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-file-excel"></i> Rekap Absensi</a>
+                <a href="data_absensi.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-pen-to-square"></i> Edit Absensi</a>
+                <a href="libur.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-calendar-xmark"></i> Atur Libur</a>
+                <a href="izin.php" class="list-group-item list-group-item-action">
+                    <i class="fa-solid fa-envelope-open-text"></i> Approval Izin <?php if($izin_pending > 0): ?><span class="badge bg-danger rounded-pill ms-2"><?= $izin_pending ?></span><?php endif; ?>
+                </a>
+                <?php if ($role == 'admin'): ?><a href="pengaturan.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-clock"></i> Atur Jam</a><?php endif; ?>
+            <?php endif; ?>
+
+            <!-- GURU (Tanpa Scan & Libur) -->
+            <?php if ($role == 'guru'): ?>
+                <!-- Menu Aktif -->
+                <a href="siswa.php" class="list-group-item list-group-item-action active"><i class="fa-solid fa-user-graduate"></i> Data Siswa</a>
+                
+                <a href="rekap.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-file-excel"></i> Rekap Absensi</a>
+                <a href="data_absensi.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-pen-to-square"></i> Edit Absensi</a>
+                <a href="izin.php" class="list-group-item list-group-item-action">
+                    <i class="fa-solid fa-envelope-open-text"></i> Approval Izin <?php if($izin_pending > 0): ?><span class="badge bg-danger rounded-pill ms-2"><?= $izin_pending ?></span><?php endif; ?>
+                </a>
+            <?php endif; ?>
+
             <div class="mt-4 border-top border-secondary pt-2">
                 <a href="profil.php" class="list-group-item list-group-item-action"><i class="fa-solid fa-user-circle"></i> Profil Saya</a>
                 <a href="logout.php" class="list-group-item list-group-item-action text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
@@ -169,14 +189,13 @@ if (isset($_GET['edit'])) {
                 <!-- FORM INPUT -->
                 <div class="col-md-4">
                     
-                    <!-- KOTAK IMPORT EXCEL (Hanya muncul jika tidak mode edit) -->
+                    <!-- KOTAK IMPORT EXCEL -->
                     <?php if(!$edit_mode): ?>
                     <div class="card shadow-sm border-success mb-4">
                         <div class="card-header bg-success text-white"><h5 class="mb-0"><i class="fa-solid fa-file-import me-2"></i>Import Siswa</h5></div>
                         <div class="card-body">
                             <p class="small text-muted mb-2">Upload data siswa sekaligus (.csv)</p>
                             
-                            <!-- LINK TEMPLATE DIARAHKAN KE FOLDER ASSETS -->
                             <a href="assets/template_siswa.csv" class="btn btn-outline-success btn-sm w-100 mb-3" download>
                                 <i class="fa-solid fa-download me-1"></i> Download Template
                             </a>
