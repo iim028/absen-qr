@@ -80,18 +80,3 @@ if (isset($_POST['register'])) {
 
 </body>
 </html>
-```
-
----
-
-#### Langkah 3: Modifikasi Halaman Login (`index.php`)
-Tambahkan link menuju halaman registrasi di bagian bawah form login agar sesuai dengan alur "Tidak Punya Akun? Daftar".
-
-Buka `index.php`, cari bagian `<div class="text-center mt-5 text-muted small">` (atau bagian bawah form), dan tambahkan/ubah menjadi:
-
-```html
-<div class="text-center mt-4">
-    <p class="mb-0 text-muted">Tidak punya akun?</p>
-    <a href="register.php" class="btn btn-sm btn-outline-primary mt-2">Daftar sebagai Staf</a>
-    <p class="mt-3 text-muted small">&copy; <?= date('Y') ?> Sekolah Digital</p>
-</div>

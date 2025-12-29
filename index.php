@@ -67,7 +67,7 @@ if (isset($_POST['login'])) {
         <!-- BAGIAN KIRI: GAMBAR -->
         <div class="col-lg-7 login-sidebar">
             <div class="sidebar-content">
-                <h1 class="display-4 fw-bold mb-3">E-Absensi SMK AL-HUDA BUMIAYU</h1>
+                <h1 class="display-4 fw-bold mb-3">E-Absensi Tadika Mesra</h1>
                 <p class="lead mb-4" style="opacity: 0.9;">Sistem absensi modern berbasis QR Code terintegrasi dengan WhatsApp Gateway untuk kemudahan monitoring kehadiran siswa.</p>
                 <div class="d-flex gap-3">
                     <div class="d-flex align-items-center"><i class="fa-solid fa-check-circle fa-2x me-2 text-warning"></i><span>Realtime</span></div>
