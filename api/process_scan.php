@@ -37,7 +37,7 @@ if (!$siswa) {
 // =========================================================
 // 3. VALIDASI IZIN / SAKIT (YANG SUDAH DI-APPROVE)
 // =========================================================
-$cek_izin = mysqli_query($conn, "SELECT status, alasan FROM perizinan 
+$cek_izin = mysqli_query($conn, "SELECT status FROM perizinan 
                                  WHERE siswa_id = '{$siswa['id']}' 
                                  AND status = 'disetujui' 
                                  AND '$today' BETWEEN tanggal_mulai AND tanggal_selesai");
@@ -48,34 +48,40 @@ if (mysqli_num_rows($cek_izin) > 0) {
 }
 
 // =========================================================
-// 4. LOGIKA ABSENSI
+// 4. LOGIKA ABSENSI & PESAN ANTI-SPAM
 // =========================================================
+
+// Fungsi untuk membuat pesan yang SANGAT BERBEDA setiap kali kirim
+function buatPesanUnik($nama, $jenis, $waktu, $status = '') {
+    $status_info = ($status != '') ? " ($status)" : "";
+    
+    // Pola 1: Formal
+    $pola1 = "Yth. Wali Murid,\nSiswa a.n *$nama* terpantau melakukan absen *$jenis*$status_info pada pukul $waktu WIB.";
+    
+    // Pola 2: Singkat / Informatif
+    $pola2 = "Laporan Kehadiran:\nNama: $nama\nAktivitas: Absen $jenis\nWaktu: $waktu\nStatus: $status";
+    
+    // Pola 3: Ramah
+    $pola3 = "Halo Bapak/Ibu,\nKami menginfokan bahwa ananda *$nama* baru saja scan kartu untuk absen *$jenis* di sekolah jam $waktu.";
+    
+    // Pola 4: To the point
+    $pola4 = "Notifikasi Sistem Absensi:\nSiswa *$nama* -> $jenis ($waktu). Terima kasih.";
+
+    // Pilih 1 pola secara acak
+    $pilihan = [$pola1, $pola2, $pola3, $pola4];
+    $pesan_jadi = $pilihan[array_rand($pilihan)];
+
+    // Tambahkan Kode Unik di bawah (WAJIB ADA)
+    // uniqid() menghasilkan string acak berdasarkan waktu mikrodetik
+    $kode_unik = uniqid(); 
+    return "$pesan_jadi\n\nRef ID: #$kode_unik"; 
+}
+
 $query_setting = mysqli_query($conn, "SELECT * FROM pengaturan_jam LIMIT 1");
 $setting = mysqli_fetch_assoc($query_setting);
 
 $cek_absen = mysqli_query($conn, "SELECT * FROM absensi WHERE siswa_id = '{$siswa['id']}' AND tanggal = '$today'");
 $data_absen = mysqli_fetch_assoc($cek_absen);
-
-// FUNGSI BANTUAN: GENERATE PESAN ACAK (ANTI-SPAM)
-function buatPesan($nama, $jenis, $waktu, $status = '') {
-    $salam_list = ["Assalamu'alaikum", "Selamat Pagi", "Halo", "Yth. Wali Murid", "Laporan Sekolah"];
-    $salam = $salam_list[array_rand($salam_list)];
-    
-    $tutup_list = ["Terima Kasih.", "Salam hangat.", "Hormat kami.", "Semoga hari Anda menyenangkan."];
-    $tutup = $tutup_list[array_rand($tutup_list)];
-    
-    // Kode unik agar hash pesan selalu berbeda (Anti-Spam WA)
-    $kode_unik = date('His') . "-" . rand(100,999); 
-    
-    $status_text = ($status != '') ? "\nStatus: *" . strtoupper($status) . "*" : "";
-
-    return "$salam,\n\n" .
-           "Memberitahukan bahwa siswa:\n" .
-           "Nama: *{$nama}*\n" .
-           "Telah absen *$jenis* pada pukul $waktu.$status_text\n\n" .
-           "$tutup\n" .
-           "Ref ID: #$kode_unik"; 
-}
 
 if (!$data_absen) {
     // --- ABSEN MASUK ---
@@ -87,9 +93,19 @@ if (!$data_absen) {
                                    VALUES ('{$siswa['id']}', '$today', '$now', '$status_kehadiran', '$ket')");
 
     if ($insert) {
-        // Kirim WA Notifikasi (Masuk)
-        $pesan_wa = buatPesan($siswa['nama'], "MASUK", $now, $status_kehadiran);
-        kirimNotifikasiWA($siswa['no_hp_ortu'], $pesan_wa);
+        // --- STRATEGI ANTI SPAM: FILTER NOTIFIKASI ---
+        // Jika Anda sering kena SPAM, saya sarankan HANYA kirim notifikasi jika TERLAMBAT.
+        // Jika Hadir Tepat Waktu, tidak perlu kirim WA (Hemat kuota & aman dari banned).
+        
+        $kirim_wa = true;
+        
+        // HAPUS tanda komentar (//) di baris bawah ini untuk mengaktifkan fitur hemat:
+        // if ($status_kehadiran == 'hadir') { $kirim_wa = false; } 
+
+        if ($kirim_wa) {
+            $pesan_wa = buatPesanUnik($siswa['nama'], "MASUK", $now, strtoupper($status_kehadiran));
+            kirimNotifikasiWA($siswa['no_hp_ortu'], $pesan_wa);
+        }
 
         echo json_encode(['status' => 'success', 'message' => "Halo {$siswa['nama']}, Absen Masuk Berhasil ($status_kehadiran)"]);
     } else {
@@ -104,7 +120,6 @@ if (!$data_absen) {
         exit;
     }
 
-    // Cek Jam Pulang
     if ($now < $setting['jam_pulang']) {
          echo json_encode(['status' => 'error', 'message' => 'Belum waktunya pulang! Jam pulang: ' . $setting['jam_pulang']]);
          exit;
@@ -113,8 +128,8 @@ if (!$data_absen) {
     $update = mysqli_query($conn, "UPDATE absensi SET jam_keluar = '$now' WHERE id = '{$data_absen['id']}'");
 
     if ($update) {
-        // Kirim WA Notifikasi (Pulang)
-        $pesan_wa = buatPesan($siswa['nama'], "PULANG", $now);
+        // Pulang biasanya aman untuk dikirim karena jam pulangnya variatif (tidak sepadat jam masuk)
+        $pesan_wa = buatPesanUnik($siswa['nama'], "PULANG", $now, "SELESAI");
         kirimNotifikasiWA($siswa['no_hp_ortu'], $pesan_wa);
 
         echo json_encode(['status' => 'success', 'message' => "Halo {$siswa['nama']}, Absen Pulang Berhasil. Hati-hati!"]);
