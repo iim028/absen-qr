@@ -1,7 +1,7 @@
 <?php
 function kirimNotifikasiWA($target, $pesan) {
     // 1. TEMPEL TOKEN FONNTE DI SINI
-    $token = "pz8LQXXA1ScC1YCKuBr9"; // Token Anda
+    $token = "GSNXFgHXyEX27jvLQz9F"; // Token Anda
 
     // 2. Logic Ubah 08 ke 62 (Wajib)
     $target = preg_replace('/[^0-9]/', '', $target); // Hapus spasi/strip
