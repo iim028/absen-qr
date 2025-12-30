@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 27 Des 2025 pada 10.17
+-- Waktu pembuatan: 30 Des 2025 pada 20.23
 -- Versi server: 8.4.3
 -- Versi PHP: 8.3.26
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `db-absensi`
+-- Database: `db_absen`
 --
 
 -- --------------------------------------------------------
@@ -42,12 +42,10 @@ CREATE TABLE `absensi` (
 --
 
 INSERT INTO `absensi` (`id`, `siswa_id`, `tanggal`, `jam_masuk`, `jam_keluar`, `status_masuk`, `keterangan`) VALUES
-(1, 1, '2025-12-20', '03:04:42', '08:55:10', 'hadir', NULL),
-(2, 2, '2025-12-20', '00:00:00', '08:54:52', 'izin', 'Izin: Hajatan'),
-(3, 3, '2025-12-20', '08:35:00', '08:51:17', 'terlambat', NULL),
-(4, 1, '2025-12-24', '04:42:19', NULL, 'hadir', NULL),
-(5, 4, '2025-12-26', '22:33:07', NULL, 'terlambat', 'Telat (Masuk jam 22:33:07)'),
-(6, 3, '2025-12-26', '22:36:32', NULL, 'terlambat', 'Telat (Masuk jam 22:36:32)');
+(10, 6, '2025-12-31', '02:33:22', NULL, 'hadir', 'Tepat Waktu'),
+(11, 8, '2025-12-31', '02:33:31', NULL, 'hadir', 'Tepat Waktu'),
+(12, 7, '2025-12-31', '02:34:57', NULL, 'hadir', 'Tepat Waktu'),
+(13, 9, '2025-12-31', '03:18:51', NULL, 'hadir', 'Tepat Waktu');
 
 -- --------------------------------------------------------
 
@@ -97,13 +95,6 @@ CREATE TABLE `perizinan` (
   `status` enum('pending','disetujui','ditolak') DEFAULT 'pending'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data untuk tabel `perizinan`
---
-
-INSERT INTO `perizinan` (`id`, `siswa_id`, `tanggal_mulai`, `tanggal_selesai`, `alasan`, `bukti_foto`, `status`) VALUES
-(1, 2, '2025-12-20', '2025-12-21', 'Hajatan', 'Cuplikan layar 2025-12-19 005745.png', 'disetujui');
-
 -- --------------------------------------------------------
 
 --
@@ -127,11 +118,10 @@ CREATE TABLE `siswa` (
 --
 
 INSERT INTO `siswa` (`id`, `nisn`, `nama`, `jenis_kelamin`, `kelas`, `jurusan`, `no_hp_ortu`, `qr_code`, `created_at`) VALUES
-(1, '1', 'ical', 'L', 'X', 'TKJ', '083870575869', '1', '2025-12-19 20:01:31'),
-(2, '2', 'laras', 'P', 'XI', 'MM', '083870512345', '2', '2025-12-20 00:51:01'),
-(3, '3', 'yusuf', 'L', 'X', 'RPL', '083870575869', '3', '2025-12-20 01:34:13'),
-(4, '4', 'rahayu', 'P', 'X', 'MM', '083870575869', '4', '2025-12-26 15:28:45'),
-(5, '5', 'budi', 'L', 'XI', 'RPL', '083870575869', '5', '2025-12-26 16:16:18');
+(6, '20', 'SIti Khalwa Rakhmawati', 'P', 'XII', 'RPL', '083863866905', '20', '2025-12-28 21:44:37'),
+(7, '30', 'Amelia Suci Rahayu', 'P', 'XII', 'RPL', '088226918854', '30', '2025-12-28 21:46:20'),
+(8, '28', 'Iim Abdul Karim', 'L', 'XII', 'RPL', '083870575869', '28', '2025-12-29 23:01:50'),
+(9, '1', 'ical', 'L', 'XII', 'MM', '083870575869', '1', '2025-12-30 20:17:32');
 
 -- --------------------------------------------------------
 
@@ -154,13 +144,12 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `role`, `nama_lengkap`, `is_active`) VALUES
 (3, 'admin', '0192023a7bbd73250516f069df18b500', 'admin', 'Administrator Utama', 1),
-(6, '1', 'c4ca4238a0b923820dcc509a6f75849b', 'siswa', 'ical', 1),
 (8, 'guru', '9310f83135f238b04af729fec041cca8', 'guru', 'siti', 1),
 (9, 'petugas', '570c396b3fc856eceb8aa7357f32af1a', 'petugas', 'ciweng', 1),
-(11, '3', 'eccbc87e4b5ce2fe28308fd9f2a7baf3', 'siswa', 'yusuf', 1),
-(12, '4', 'a87ff679a2f3e71d9181a67b7542122c', 'siswa', 'rahayu', 1),
-(13, '2', 'c81e728d9d4c2f636f067f89cc14862c', 'siswa', 'laras', 1),
-(14, '5', 'e4da3b7fbbce2345d7772b0674a318d5', 'siswa', 'budi', 1);
+(15, '20', '98f13708210194c475687be6106a3b84', 'siswa', 'SIti Khalwa Rakhmawati', 1),
+(16, '30', '34173cb38f07f89ddbebc2ac9128303f', 'siswa', 'Amelia Suci Rahayu', 1),
+(17, '28', '33e75ff09dd601bbe69f351039152189', 'siswa', 'Iim Abdul Karim', 1),
+(18, '1', 'c4ca4238a0b923820dcc509a6f75849b', 'siswa', 'ical', 1);
 
 --
 -- Indexes for dumped tables
@@ -213,7 +202,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `absensi`
 --
 ALTER TABLE `absensi`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT untuk tabel `hari_libur`
@@ -237,13 +226,13 @@ ALTER TABLE `perizinan`
 -- AUTO_INCREMENT untuk tabel `siswa`
 --
 ALTER TABLE `siswa`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
