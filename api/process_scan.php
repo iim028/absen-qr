@@ -14,51 +14,65 @@ $today = date('Y-m-d');
 $now = date('H:i:s');
 
 // =========================================================
-// FUNGSI ANTI-SPAM: Membuat pesan unik setiap saat
+// FUNGSI ANTI-SPAM & PESAN PERSONAL
 // =========================================================
-function buatPesanUnik($nama, $jenis, $waktu, $status_ket = '') {
-    // 1. Variasi Salam
+function buatPesanPersonal($nama, $jenis, $waktu, $status_ket = '') {
+    // 1. Variasi Salam (Lebih santai tapi sopan)
     $salam_array = [
-        "Assalamu'alaikum Warahmatullahi Wabarakatuh,", 
-        "Selamat Pagi Ayah/Bunda,", 
+        "Assalamualaikum Ayah/Bunda,", 
+        "Selamat Pagi Bapak/Ibu,", 
         "Halo Wali Murid,", 
-        "Yth. Orang Tua Siswa,",
-        "Laporan Kehadiran Sekolah,"
+        "Salam sejahtera,",
+        "Selamat Pagi,"
     ];
     $salam = $salam_array[array_rand($salam_array)];
 
-    // 2. Variasi Kalimat Inti
-    $pola_pesan = rand(1, 3);
-    $isi_pesan = "";
+    // 2. Variasi Kalimat Inti (Bahasa natural)
+    // $jenis = 'MASUK' atau 'PULANG'
+    $pesan_inti = "";
+    
+    if ($jenis == 'MASUK') {
+        $kalimat_masuk = [
+            "Alhamdulillah, ananda *$nama* sudah sampai di sekolah dengan selamat pada pukul $waktu.",
+            "Mengabarkan bahwa ananda *$nama* telah tiba di sekolah jam $waktu.",
+            "Ananda *$nama* baru saja melakukan absen masuk sekolah pukul $waktu.",
+            "Laporan kehadiran: Ananda *$nama* sudah siap belajar di sekolah (masuk pukul $waktu)."
+        ];
+        $pesan_inti = $kalimat_masuk[array_rand($kalimat_masuk)];
 
-    if ($pola_pesan == 1) {
-        $isi_pesan = "Menginformasikan bahwa ananda *$nama* telah melakukan scan absen *$jenis* pada pukul $waktu WIB.";
-    } elseif ($pola_pesan == 2) {
-        $isi_pesan = "Siswa atas nama *$nama* terpantau sistem sudah *$jenis* sekolah di jam $waktu WIB.";
-    } else {
-        $isi_pesan = "Notifikasi Otomatis: Ananda *$nama* berhasil absen *$jenis* pukul $waktu WIB.";
+        // Tambahan Status Telat yang lebih halus
+        if (strtolower($status_ket) == 'terlambat') {
+            $pesan_inti .= "\n\nCatatan: Sedikit terlambat datang hari ini. Mohon diingatkan untuk berangkat lebih awal besok ya. Semangat!";
+        } elseif (strtolower($status_ket) == 'hadir') {
+             $pesan_inti .= "\n\nDatang tepat waktu. Terima kasih atas dukungannya.";
+        }
+
+    } else { // PULANG
+        $kalimat_pulang = [
+            "Kegiatan belajar mengajar telah selesai. Ananda *$nama* sudah absen pulang pada pukul $waktu.",
+            "Waktunya pulang! Ananda *$nama* sudah meninggalkan sekolah jam $waktu.",
+            "Ananda *$nama* telah menyelesaikan sekolah hari ini dan absen pulang pukul $waktu.",
+            "Menginformasikan ananda *$nama* sudah pulang sekolah jam $waktu. Mohon dipantau kepulangannya."
+        ];
+        $pesan_inti = $kalimat_pulang[array_rand($kalimat_pulang)];
+        $pesan_inti .= "\n\nHati-hati di jalan dan selamat beristirahat.";
     }
 
-    // 3. Tambahan Status (Jika ada)
-    if ($status_ket != '') {
-        $isi_pesan .= "\nStatus Kehadiran: *" . strtoupper($status_ket) . "*";
-    }
-
-    // 4. Variasi Penutup
+    // 3. Variasi Penutup (Tanpa label kaku "Hormat Kami")
     $tutup_array = [
-        "Terima kasih atas perhatiannya.",
-        "Semoga hari ini menyenangkan.",
-        "Mohon doanya untuk kelancaran belajar ananda.",
-        "Hormat kami, Admin Sekolah."
+        "Terima kasih.",
+        "Semoga harinya menyenangkan.",
+        "Salam hangat dari sekolah.",
+        "SMK Al-Huda Bumiayu."
     ];
     $tutup = $tutup_array[array_rand($tutup_array)];
 
-    // 5. MAGIC TRICK: Kode Unik di Footer (Agar hash pesan selalu beda)
-    // uniqid() menghasilkan string acak berdasarkan waktu mikrodetik
-    $kode_unik = date('His') . "-" . rand(100, 999);
+    // 4. Kode Unik (Disembunyikan/Kecil agar tidak mengganggu estetika)
+    // Gunakan karakter tak terlihat (Zero Width Space) atau format footer kecil
+    $kode_unik = substr(md5(uniqid()), 0, 5); 
 
-    // Gabungkan Semua
-    return "$salam\n\n$isi_pesan\n\n$tutup\n\nRef ID: #$kode_unik";
+    // Gabungkan
+    return "$salam\n\n$pesan_inti\n\n$tutup\n\n----------------\nRef: $kode_unik"; 
 }
 
 // =========================================================
@@ -114,20 +128,18 @@ if (!$data_absen) {
                                    VALUES ('{$siswa['id']}', '$today', '$now', '$status_kehadiran', '$ket')");
 
     if ($insert) {
-        // --- LOGIKA PENGIRIMAN WA ---
+        // Kirim WA Notifikasi (Masuk) - Pesan Personal
         $kirim_wa = true;
         
-        // OPSI HEMAT SPAM: 
-        // Hapus tanda komentar (//) di baris bawah jika ingin MEMATIKAN notifikasi untuk siswa yang Tepat Waktu.
+        // OPSI HEMAT SPAM: Matikan notifikasi jika tepat waktu (Opsional, uncomment baris bawah)
         // if ($status_kehadiran == 'hadir') { $kirim_wa = false; } 
 
         if ($kirim_wa) {
-            // Gunakan fungsi buatPesanUnik agar pesan tidak terdeteksi spam
-            $pesan_wa = buatPesanUnik($siswa['nama'], "MASUK", $now, $status_kehadiran);
+            $pesan_wa = buatPesanPersonal($siswa['nama'], "MASUK", $now, $status_kehadiran);
             kirimNotifikasiWA($siswa['no_hp_ortu'], $pesan_wa);
         }
 
-        echo json_encode(['status' => 'success', 'message' => "Halo {$siswa['nama']}, Absen Masuk Berhasil ($status_kehadiran)"]);
+        echo json_encode(['status' => 'success', 'message' => "Halo {$siswa['nama']}, Selamat Pagi! Absen Masuk Berhasil."]);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan data DB']);
     }
@@ -149,11 +161,11 @@ if (!$data_absen) {
     $update = mysqli_query($conn, "UPDATE absensi SET jam_keluar = '$now' WHERE id = '{$data_absen['id']}'");
 
     if ($update) {
-        // Gunakan fungsi buatPesanUnik
-        $pesan_wa = buatPesanUnik($siswa['nama'], "PULANG", $now, "SELESAI");
+        // Kirim WA Notifikasi (Pulang) - Pesan Personal
+        $pesan_wa = buatPesanPersonal($siswa['nama'], "PULANG", $now);
         kirimNotifikasiWA($siswa['no_hp_ortu'], $pesan_wa);
 
-        echo json_encode(['status' => 'success', 'message' => "Halo {$siswa['nama']}, Absen Pulang Berhasil. Hati-hati!"]);
+        echo json_encode(['status' => 'success', 'message' => "Halo {$siswa['nama']}, Absen Pulang Berhasil. Hati-hati di jalan!"]);
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Gagal update data DB']);
     }
